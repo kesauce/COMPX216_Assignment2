@@ -53,55 +53,122 @@ class KNetWalk(Problem):
                 current_tile = self.tiles[i][j]
 
                 # Current state stores the orientation of the current tile (how many times its rotated counterclockwise)
-                current_state = state[i * self.width + j]
+                current_rotation = state[i * self.width + j]
+                current_tile = tuple((con + current_rotation) % 4 for con in current_tile)
 
                 # Checks if the right neighbouring tile (i, j + 1) exists 
-                if j < self.width - 1:
-                    # Right tile exists within the boundary of the game board
+                if (j + 1) < self.width:
                     right_tile = self.tiles[i][j + 1]
 
-                    # Checks the connection between the current tile and the right tile
-                    for current_pipe_direction in current_tile:
-                        for right_pipe_direction in right_tile:
-                            # Checks if the current tile has a connection and if so, add to the fitness function
-                            if valid_connections[current_pipe_direction] in right_tile:
-                                fitness_function += 1
-                
-                # Checks if the bottom neighbouring tile (i + 1, j) exists
-                if i < self.height - 1:
-                    # Bottom tile exists within the boundary of the game board
-                    bottom_tile = self.tiles[i + 1][j]
+                    # Rotate the right tile
+                    right_rotation = state[i * self.width + (j + 1)]
+                    right_tile = tuple((con + right_rotation) % 4 for con in right_tile)
+                else:
+                    right_tile = None
 
-                    # Checks the connection between the current tile and the bottom tile
-                    for current_pipe_direction in current_tile:
-                        for bottom_pipe_direction in bottom_tile:
-                            # Checks if the current tile has a connection and if so, add to the fitness function
-                            if valid_connections[current_pipe_direction] in bottom_tile:
-                                fitness_function += 1
-
-                # Checks if the left neighbouring tile (i, j - 1) exists
-                if j > 0:
-                    # Left tile exists within the boundary of the game board
-                    left_tile = self.tiles[i][j - 1]
-
-                    # Checks the connection between the current tile and the left tile
-                    for current_pipe_direction in current_tile:
-                        for left_pipe_direction in left_tile:
-                            # Checks if the current tile has a connection and if so, add to the fitness function
-                            if valid_connections[current_pipe_direction] in left_tile:
-                                fitness_function += 1
-                
                 # Checks if the top neighbouring tile (i - 1, j) exists
-                if i > 0:
-                    # Top tile exists within the boundary of the game board
+                if (i - 1) >= 0:
                     top_tile = self.tiles[i - 1][j]
 
-                    # Checks the connection between the current tile and the top tile
-                    for current_pipe_direction in current_tile:
-                        for top_pipe_direction in top_tile:
-                            # Checks if the current tile has a connection and if so, add to the fitness function
-                            if valid_connections[current_pipe_direction] in top_tile:
-                                fitness_function += 1
+                    # Rotate the top tile
+                    top_rotation = state[(i - 1) * self.width + j]
+                    top_tile = tuple((con + top_rotation) % 4 for con in top_tile)
+                else:
+                    top_tile = None
+
+                # Checks if the left neighbouring tile (i, j - 1) exists
+                if (j - 1) >= 0:
+                    left_tile = self.tiles[i][j - 1]
+
+                    # Rotate the left tile
+                    left_rotation = state[i * self.width + (j - 1)]
+                    left_tile = tuple((con + left_rotation) % 4 for con in left_tile)
+                else:
+                    left_tile = None
+
+                # Checks if the bottom neighbouring tile exists (i + 1, j)
+                if (i + 1) < self.height:
+                    bottom_tile = self.tiles[i + 1][j]
+
+                    # Rotate the bottom tile
+                    bottom_rotation = state[(i + 1) * self.width + j]
+                    bottom_tile = tuple((con + bottom_rotation) % 4 for con in bottom_tile)
+                else:
+                    bottom_tile = None
+                
+                # Loops through the current tile's connections
+                for current_connection in current_tile:
+                    # If current tile has a right connection
+                    if (current_connection == 0 and right_tile is not None):
+                        # Check if the right tile has a left connection
+                        if 2 in right_tile:
+                            fitness_function += 1
+
+                    # If the current tile has a top connection
+                    if (current_connection == 1 and top_tile is not None):
+                        # Check if the top tile has a bottom connection
+                        if 3 in top_tile:
+                            fitness_function += 1
+
+                    # If the current tile has a left connection
+                    if (current_connection == 2 and left_tile is not None):
+                        # Check if the left tile has a right connection
+                        if 0 in left_tile:
+                            fitness_function += 1
+
+                    # If the current tile has a bottom connection
+                    if (current_connection == 3 and bottom_tile is not None):
+                        # Check if the bottom tile has a ritopght connection
+                        if 1 in bottom_tile:
+                            fitness_function += 1       
+
+                # # Checks if the right neighbouring tile (i, j + 1) exists 
+                # if j < self.width - 1:
+                #     # Right tile exists within the boundary of the game board
+                #     right_tile = self.tiles[i][j + 1]
+
+                #     # Checks the connection between the current tile and the right tile
+                #     for current_pipe_direction in current_tile:
+                #         for right_pipe_direction in right_tile:
+                #             # Checks if the current tile has a connection and if so, add to the fitness function
+                #             if valid_connections[current_pipe_direction] in right_tile:
+                #                 fitness_function += 1
+                
+                # # Checks if the bottom neighbouring tile (i + 1, j) exists
+                # if i < self.height - 1:
+                #     # Bottom tile exists within the boundary of the game board
+                #     bottom_tile = self.tiles[i + 1][j]
+
+                #     # Checks the connection between the current tile and the bottom tile
+                #     for current_pipe_direction in current_tile:
+                #         for bottom_pipe_direction in bottom_tile:
+                #             # Checks if the current tile has a connection and if so, add to the fitness function
+                #             if valid_connections[current_pipe_direction] in bottom_tile:
+                #                 fitness_function += 1
+
+                # # Checks if the left neighbouring tile (i, j - 1) exists
+                # if j > 0:
+                #     # Left tile exists within the boundary of the game board
+                #     left_tile = self.tiles[i][j - 1]
+
+                #     # Checks the connection between the current tile and the left tile
+                #     for current_pipe_direction in current_tile:
+                #         for left_pipe_direction in left_tile:
+                #             # Checks if the current tile has a connection and if so, add to the fitness function
+                #             if valid_connections[current_pipe_direction] in left_tile:
+                #                 fitness_function += 1
+                
+                # # Checks if the top neighbouring tile (i - 1, j) exists
+                # if i > 0:
+                #     # Top tile exists within the boundary of the game board
+                #     top_tile = self.tiles[i - 1][j]
+
+                #     # Checks the connection between the current tile and the top tile
+                #     for current_pipe_direction in current_tile:
+                #         for top_pipe_direction in top_tile:
+                #             # Checks if the current tile has a connection and if so, add to the fitness function
+                #             if valid_connections[current_pipe_direction] in top_tile:
+                #                 fitness_function += 1
 
         # Return the fitness function
         return fitness_function
