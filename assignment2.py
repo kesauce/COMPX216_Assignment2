@@ -122,54 +122,6 @@ class KNetWalk(Problem):
                         if 1 in bottom_tile:
                             fitness_function += 1       
 
-                # # Checks if the right neighbouring tile (i, j + 1) exists 
-                # if j < self.width - 1:
-                #     # Right tile exists within the boundary of the game board
-                #     right_tile = self.tiles[i][j + 1]
-
-                #     # Checks the connection between the current tile and the right tile
-                #     for current_pipe_direction in current_tile:
-                #         for right_pipe_direction in right_tile:
-                #             # Checks if the current tile has a connection and if so, add to the fitness function
-                #             if valid_connections[current_pipe_direction] in right_tile:
-                #                 fitness_function += 1
-                
-                # # Checks if the bottom neighbouring tile (i + 1, j) exists
-                # if i < self.height - 1:
-                #     # Bottom tile exists within the boundary of the game board
-                #     bottom_tile = self.tiles[i + 1][j]
-
-                #     # Checks the connection between the current tile and the bottom tile
-                #     for current_pipe_direction in current_tile:
-                #         for bottom_pipe_direction in bottom_tile:
-                #             # Checks if the current tile has a connection and if so, add to the fitness function
-                #             if valid_connections[current_pipe_direction] in bottom_tile:
-                #                 fitness_function += 1
-
-                # # Checks if the left neighbouring tile (i, j - 1) exists
-                # if j > 0:
-                #     # Left tile exists within the boundary of the game board
-                #     left_tile = self.tiles[i][j - 1]
-
-                #     # Checks the connection between the current tile and the left tile
-                #     for current_pipe_direction in current_tile:
-                #         for left_pipe_direction in left_tile:
-                #             # Checks if the current tile has a connection and if so, add to the fitness function
-                #             if valid_connections[current_pipe_direction] in left_tile:
-                #                 fitness_function += 1
-                
-                # # Checks if the top neighbouring tile (i - 1, j) exists
-                # if i > 0:
-                #     # Top tile exists within the boundary of the game board
-                #     top_tile = self.tiles[i - 1][j]
-
-                #     # Checks the connection between the current tile and the top tile
-                #     for current_pipe_direction in current_tile:
-                #         for top_pipe_direction in top_tile:
-                #             # Checks if the current tile has a connection and if so, add to the fitness function
-                #             if valid_connections[current_pipe_direction] in top_tile:
-                #                 fitness_function += 1
-
         # Return the fitness function
         return fitness_function
                 
