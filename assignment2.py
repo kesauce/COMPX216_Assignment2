@@ -129,7 +129,10 @@ class KNetWalk(Problem):
 
 # Task 2
 # Configure an exponential schedule for simulated annealing.
-sa_schedule = exp_schedule(k=20, lam=0.005, limit=100)
+# k - initial temp (starting chance of picking a bad state)
+# lam - how quickly temperature decreases (decrease quickly mean less bad choice)
+# limit - maximum number of iterations (more limit mean more time)
+sa_schedule = exp_schedule(k=10, lam=0.05, limit=150)
 
 # Task 3
 # Configure parameters for the genetic algorithm.
@@ -175,7 +178,6 @@ if __name__ == '__main__':
     visualise(network.tiles, state)
 
     # Task 2 test code
-    '''
     run = 0
     method = 'simulated annealing'
     while True:
@@ -190,7 +192,6 @@ if __name__ == '__main__':
         run += 1
     print(f'{method} run {run}: solution found')
     visualise(network.tiles, state)
-    '''
 
     # Task 3 test code
     '''
