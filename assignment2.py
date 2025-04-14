@@ -1,6 +1,7 @@
 from search import *
 from random import randint
 from assignment2aux import *
+import numpy as np
 
 def read_tiles_from_file(filename):
     lines = [line.rstrip('\n') for line in open(filename, 'r').readlines()]
@@ -159,7 +160,7 @@ def local_beam_search(problem, population):
     # Create a list of the children of the parent
     children_population = []
     
-    # Call the recursive function
+    # Loop through until stopping conditions found
     while True:
         # Get all the children population from the parent population
         for parent in parent_population:
@@ -203,8 +204,74 @@ def stochastic_beam_search(problem, population, limit=1000):
     # Implement stochastic beam search.
     # Return a goal state if found in the population.
     # Return the fittest state in the population if the generation limit is reached.
-    # Replace the line below with your code.
-    raise NotImplementedError
+    # Set the passed in population as the parent and sort by fitness function (higher is better)
+    parent_population = population
+    parent_population.sort(reverse=True, key=problem.value)
+
+    # Create a list of the children of the parent
+    children_population = []
+
+    # Set beam width to the size of the original population
+    beam_width = len(parent_population)
+
+    for i in range(1000):
+        # Get all the children population from the parent population
+        for parent in parent_population:
+            # Get the possible actions from a specific parent state and add it to the children population
+            parent_actions = problem.actions(parent)
+            
+            # Get the result of each action and append it to the children list
+            for result in parent_actions:
+                action_result = problem.result(parent, result)
+                children_population.append(action_result)
+        
+        # Sort the children population by fitness function
+        children_population.sort(reverse=True, key=problem.value)
+
+        # Checks if the fittest child is fitter than fittest parent
+        if problem.value(parent_population[0]) > problem.value(children_population[0]):
+            # Return the fittest parent
+            return parent_population[0]
+        
+        # If goal is in parent population
+        elif problem.goal_test(parent_population[0]) == True:
+            return parent_population[0]
+            
+        # If goal is in children population
+        elif problem.goal_test(children_population[0]) == True:
+            return children_population[0]
+        
+        # Perform weighted selection and restart
+        else:
+            # Calculate the total fitness of the children population
+            total_fitness = 0
+            for child in children_population:
+                total_fitness += problem.value(child)
+            
+            # Create the probability array
+            children_probability = []
+
+            # Calculate the probability of each child
+            for child in children_population:
+                children_probability.append(problem.value(child) / total_fitness)
+
+            # Create a list on indices that will correspond to the children population
+            indices = []
+            for i in range(len(children_population)):
+                indices.append(i)
+
+            # Do weighted sampling without replacement
+            sample_children_indices = np.random.choice(indices, min(beam_width, len(children_population)), False, children_probability)
+            sample_children = []
+            for index in sample_children_indices:
+                sample_children.append(children_population[index])
+
+            parent_population = sample_children.copy()
+            children_population = []
+            sample_children = []
+    
+    # Returns the fittest state in the parent
+    return parent_population[0]
 
 if __name__ == '__main__':
 
@@ -281,7 +348,7 @@ if __name__ == '__main__':
     visualise(network.tiles, state)
 
     # Task 5 test code
-    '''
+    
     run = 0
     method = 'stochastic beam search'
     while True:
@@ -298,4 +365,4 @@ if __name__ == '__main__':
         run += 1
     print(f'{method} run {run}: solution found')
     visualise(network.tiles, state)
-    '''
+
