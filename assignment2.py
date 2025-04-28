@@ -310,7 +310,7 @@ if __name__ == '__main__':
     print(f'{method} run {run}: solution found')
     visualise(network.tiles, state)
 
-    '''
+    
     # Task 3 test code
     run = 0
     method = 'genetic algorithm'
@@ -328,7 +328,7 @@ if __name__ == '__main__':
         run += 1
     print(f'{method} run {run}: solution found')
     visualise(network.tiles, state)
-    '''
+    
     # Task 4 test code
     run = 0
     method = 'local beam search'
